@@ -45,35 +45,6 @@ export default function HomeScreen() {
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     "Roboto-Regular": require('../assets/fonts/Roboto-Regular.ttf')
   });
-  if (!fontsLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
-  
-  const today = new Date(new Date().setHours(0, 0, 0, 0));
-  const lastYear = new Date(
-    new Date(new Date().setDate(today.getDate() - 365)).setHours(
-      0,
-      0,
-      0,
-      0
-    )
-  )
-
-  const yesterday = new Date(
-    new Date(new Date().setDate(today.getDate() - 1)).setHours(0, 0, 0, 0)
-  );
-
-
-  // console.log(data, "data")
-  // 
-  function generateRandomNumberFromRange(min, max, decimalPlaces) {
-    var rand = Math.random() * (max - min) + min;
-    var power = Math.pow(10, decimalPlaces);
-    return Math.floor(rand * power) / power;
-  
-    // return Math.random() * (max - min) + min;
-  }
 
   useEffect(() => {
     fetchData();
@@ -127,9 +98,36 @@ export default function HomeScreen() {
       setLoading(false);
     }
   };
+
+  if (!fontsLoaded) {
+    return <Text>Loading...</Text>;
+  }
   
+  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  const lastYear = new Date(
+    new Date(new Date().setDate(today.getDate() - 365)).setHours(
+      0,
+      0,
+      0,
+      0
+    )
+  )
+
+  const yesterday = new Date(
+    new Date(new Date().setDate(today.getDate() - 1)).setHours(0, 0, 0, 0)
+  );
 
 
+  // console.log(data, "data")
+  // 
+  function generateRandomNumberFromRange(min, max, decimalPlaces) {
+    var rand = Math.random() * (max - min) + min;
+    var power = Math.pow(10, decimalPlaces);
+    return Math.floor(rand * power) / power;
+  
+    // return Math.random() * (max - min) + min;
+  }
+  
   const handlePress = () => {
     setIsChecked(!isChecked);
   };
@@ -499,8 +497,6 @@ export default function HomeScreen() {
 
         {showTab && <TabToday onChange={onDateRangeChange} value={dateRange} ranges={ranges} setSelectedDateLabel={setSelectedDateLabel} setDateRange={setDateRange} dateRange={dateRange} setShowTab={setShowTab}/>}
         {showTabYesterday && <TabYesterday onChange={onCompareDateRangeChange} value={compareDateRange} label='Compare: ' ranges={compareRanges} setSelectedDateLabel={setSelectedDateLabel} setCompareDateRange={setCompareDateRange} compareDateRange={compareDateRange} setShowTabYesterday={setShowTabYesterday}/>}
-        {/* tab end */}
-        {/* Sales by channel */}
         <View style={styles.salesCard}>
           <View style={styles.salesCardHeader}>
             <TouchableOpacity><Text style={styles.salesCradTitle}>Average Order Value</Text></TouchableOpacity>
@@ -510,18 +506,7 @@ export default function HomeScreen() {
             <RightTopArrow name="arrow-top-right" size={18} color="#2D765A" style={{ marginTop: -12 }} />
             <Text style={styles.percentageText}>15%</Text>
           </View>
-          {/* <Chart/> */}
           {/* <LineChart
-            data={chartData}
-            width={Dimensions.get('window').width - 50}
-            height={220}
-            chartConfig={chartConfig} 
-            withVerticalLines={false}
-            withDots={false}
-            bezier
-            formatYLabel={(yValue) => `€${yValue}`}
-          /> */}
-          <LineChart
             data={chartDataa}
             width={Dimensions.get('window').width + 50} // Use the increased width
             height={220}
@@ -533,16 +518,6 @@ export default function HomeScreen() {
             style={{
               paddingRight: 50, // Add padding to the right
             }}
-          />
-          {/* <LineChart
-            data={extendedData}
-            width={Dimensions.get('window').width + 50}
-            height={220}
-            chartConfig={chartConfig}
-            withVerticalLines={false}
-            withDots={false}
-            bezier
-            formatYLabel={(yValue) => `€${yValue}`}
           /> */}
           <View style={styles.labelcontainer}>
             <View style={styles.dataLabel}>
@@ -553,42 +528,16 @@ export default function HomeScreen() {
                 Jul 4, 2023- Jul 2, 2024
               </Text>
             </View>
-            {/* <TouchableOpacity>
-              <Text style={styles.moreText}>
-                +1 more
-              </Text>
-            </TouchableOpacity> */}
           </View>
         </View>
-        {/* <View style={styles.salesCard}>
-          <View style={styles.salesCardHeader}><Text style={styles.salesCradTitle}>Sales by channel</Text>
-            <Material name="text-box-search-outline" style={styles.salesIcon} color="gray" size={20} /></View>
-          <View style={styles.noData}>
-            <Text style={{ color: "gray" }}>There was no data found for this date range.</Text>
-          </View>
-        </View>
-        <View style={styles.salesCard}>
-          <View style={styles.salesCardHeader}><Text style={styles.salesCradTitle}>Sales by channel</Text>
-            <Material name="text-box-search-outline" style={styles.salesIcon} color="gray" size={20} /></View>
-          <View style={styles.noData}>
-            <Text style={{ color: "gray" }}>There was no data found for this date range.</Text>
-          </View>
-        </View>
-        <View style={styles.salesCard}>
-          <View style={styles.salesCardHeader}><Text style={styles.salesCradTitle}>Sales by channel</Text>
-            <Material name="text-box-search-outline" style={styles.salesIcon} color="gray" size={20} /></View>
-          <View style={styles.noData}>
-            <Text style={{ color: "gray" }}>There was no data found for this date range.</Text>
-          </View>
-        </View> */}
-        <Card
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Total sales"
           chart="line"
           data={data.totalSales}
           selectedDatelabel={selectedDatelabel}
-        />
+        /> */}
 
         <Card
           dateRange={dateRange}
@@ -599,9 +548,9 @@ export default function HomeScreen() {
           selectedDatelabel={selectedDatelabel}
           showTotal={false}
 
-        />
+        /> 
 
-        <Card
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Online store sessions"
@@ -610,7 +559,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />
+        />  */}
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -620,8 +569,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />
-        <Card
+        />  
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Total orders"
@@ -630,8 +579,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />
-        <Card
+        />  */}
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Average order value"
@@ -643,7 +592,7 @@ export default function HomeScreen() {
             (totalSales / (totalOrders || 1)) * (totalOrders > 10 && totalOrders <= 20 ? generateRandomNumberFromRange(0.97, 0.98, 2) : totalOrders > 20 ? generateRandomNumberFromRange(0.94, 0.96, 2) : 1),
           ]}
           showTotal={true}
-        />
+        /> */}
 
         <Card
           dateRange={dateRange}
@@ -652,7 +601,7 @@ export default function HomeScreen() {
           chart="bar"
           data={[]} //{data.totalSalesBySource}
           selectedDatelabel={selectedDatelabel}
-        />
+        /> 
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -662,7 +611,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />
+        />  
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
