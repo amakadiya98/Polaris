@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Polaris",
-    "slug": "Polaris",
+    "name": "AwesomeProject",
+    "slug": "AwesomeProject",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,22 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.rajan_rv.AwesomeProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "73969114-6ff2-4522-bb16-eb0ca39636bd"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/73969114-6ff2-4522-bb16-eb0ca39636bd"
     }
   }
 }

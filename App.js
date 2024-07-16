@@ -1,310 +1,239 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
+import NavBar from './navBar';
+import Dotes from 'react-native-vector-icons/Entypo';
+import Support from 'react-native-vector-icons/AntDesign';
+import Setting from 'react-native-vector-icons/Ionicons';
+import Contact from 'react-native-vector-icons/Octicons';
+import Store from 'react-native-vector-icons/Ionicons';
 import {
-  Button,
   DrawerLayoutAndroid,
   Text,
   StyleSheet,
   View,
-  StatusBar,
-  TextInput,
-  Image,
   TouchableOpacity,
-  ScrollView,
-  Pressable 
 } from 'react-native';
+import { PolarisVizProvider } from '@shopify/polaris-viz-native';
+import BarChart from './ChartDemo';
 
 
 const App = () => {
   const drawer = useRef(null);
-  
+  const [activeItem, setActiveItem] = useState(null);
+
   const navigationView = () => (
     <View style={[styles.container, styles.navigationContainer]}>
-      <View style={styles.sidebarList}>
-        <View style={styles.sidebarListItem}>
-            <View style={styles.leftPartside}>
-              <Image
-                style={styles.sidebarIcon}
-                source={require('./assets/sidebar/1.png')}
-              />  
-              <Text style={styles.sidebarText}>Orders</Text>
+      <View style={styles.mainContent}>
+        <TouchableOpacity onPress={() => setActiveItem('item1')}>
+          <View style={[styles.sidebarList, activeItem === 'item1' && styles.activeSidebarList]}>
+            <View style={styles.listContent}>
+              <View style={styles.logoStyles}><Text style={styles.storeLogo}>MS</Text></View>
+              <View style={styles.storeStyles}><Text style={styles.storeName}>My Store</Text></View>
+              <TouchableOpacity><Dotes name="dots-three-vertical" color="gray" size={20} /></TouchableOpacity>
             </View>
-        </View>
-        <View style={styles.sidebarListItem}>
-            <View style={styles.leftPartside}>
-              <Image
-                style={styles.sidebarIcon}
-                source={require('./assets/sidebar/1.png')}
-              />  
-              <Text style={styles.sidebarText}>Products</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActiveItem('item2')}>
+          <View style={[styles.sidebarList, activeItem === 'item2' && styles.activeSidebarList]}>
+            <View style={styles.listContent}>
+              <View style={[styles.logoStyles, styles.SelogoStyles]}><Text style={styles.storeLogo}>Se</Text></View>
+              <View style={styles.storeStyles}><Text style={styles.storeName}>Sleepeeness - Dormez efin</Text></View>
+              <TouchableOpacity><Dotes name="dots-three-vertical" color="gray" size={20} /></TouchableOpacity>
             </View>
-        </View>
-        <View style={styles.sidebarListItem}>
-            <View style={styles.leftPartside}>
-              <Image
-                style={styles.sidebarIcon}
-                source={require('./assets/sidebar/1.png')}
-              />  
-              <Text style={styles.sidebarText}>Customers</Text>
-            </View>
-        </View>
+          </View>
+        </TouchableOpacity>
       </View>
-        {/* <Button
-          title="Close drawer"
-          onPress={() => drawer.current.closeDrawer()}
-        /> */}
+
+
+
+
+      <View style={styles.optionContent}>
+        <TouchableOpacity>
+          <View style={styles.options}>
+            <Contact name="person" style={styles.iconsStyles} color="#31363F" size={22} />
+            <Text style={styles.optionsText}>Name</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.options}>
+            <Store name="storefront-outline" style={styles.iconsStyles} color="black" size={20} />
+            <Text style={styles.optionsText}>Add store</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.options}>
+            <Support name="questioncircleo" style={styles.iconsStyles} color="black" size={20} />
+            <Text style={styles.optionsText}>Support</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View style={styles.options}>
+            <Setting name="settings-outline" style={styles.iconsStyles} color="black" size={20} />
+            <Text style={styles.optionsText}>Settings</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
+  // return <BarChart />
+
   return (
-    <DrawerLayoutAndroid
-      ref={drawer}
-      drawerWidth={300}
-      renderNavigationView={navigationView}>
-      <StatusBar />
-      <View style={styles.container}>
-        {/* <View style={styles.headerPart}>
-        <TouchableOpacity style={styles.toggleBtn} onPress={() => drawer.current.openDrawer()}>
-          <Image
-            style={styles.toggleLogo}
-            source={require('./assets/toggle.png')}
-          />  
-          </TouchableOpacity>
-          <View style={styles.searchIconInput}>
-            <View style={styles.searchIcon}>
-              <Image
-                source={require('./assets/search.png')}
-              />  
-            </View>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Search"
-                placeholderTextColor={'#b5b5b5'}
-            />
-          </View>
-         
-          <View style={styles.dropdownPart}>
-            <Image
-              style={styles.tinyLogo}
-              source={require('./assets/notification.png')}
-            />
-            <TouchableOpacity style={styles.msDropdown}>
-              <Text style={styles.msText}>MS</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
-        <View style={styles.mainContent}>
-          <Text style={styles.pageTitle}>
-            Analytics
-          </Text>
-          <View style={styles.listData}>
-            <View style={styles.listItem}>
-              <Text style={styles.listItemName}>Reports</Text>
-            </View>
-            <View style={{...styles.listItem,...styles.listItemLast }}>
-              <Text style={{...styles.listItemName}}>Live View</Text>
-            </View>
-          </View>
-        </View>
-        <ScrollView style={styles.analyticsData}>
 
-            <Text style={styles.pageInnerTitle}>
-              Analytics
-            </Text>
-            <View style={styles.darkContentData}>
-              <Pressable style={styles.primaryBtn}>
-                <Text style={styles.btnText}>Today</Text>
-              </Pressable>
-              <Pressable style={styles.primaryBtn}>
-                <Text style={styles.btnText}>Compare to: Yesterday</Text>
-              </Pressable>
-            </View>
-           
-            <View style={styles.salesCard}>
-              <Text style={styles.salesCradTitle}>Total Sales</Text>
-            </View>
-            <View style={styles.salesCard}>
-
-            </View>
-            <View style={styles.salesCard}>
-
-            </View>
-        </ScrollView>
+    // <PolarisVizProvider>
+      <View style={{ marginTop: 10, height: '100%' }}>
+        <DrawerLayoutAndroid
+          ref={drawer}
+          drawerWidth={300}
+          renderNavigationView={navigationView}>
+          <View style={styles.container}>
+            <NavBar />
+          </View>
+        </DrawerLayoutAndroid>
       </View>
-    </DrawerLayoutAndroid>
+    // </PolarisVizProvider>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff'
+    backgroundColor: 'white',
+    flex: 1,
+    marginTop: 30
   },
   navigationContainer: {
-    backgroundColor: '#ebebeb',
+    backgroundColor: 'white',
     zIndex: 2,
-    position:'relative',
-    paddingVertical: 20,
-    height: '100%'
+    position: 'relative',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    height: '100%',
+    flexDirection: "column",
+    justifyContent: "space-between"
   },
-  headerPart:{
-    paddingHorizontal:16,
-    paddingVertical:10,
-    display: 'flex',
+  listContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sidebarList: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 16,
+  },
+  activeSidebarList: {
+    backgroundColor: '#F6F5F2',
+    borderRadius: 16,
+  },
+  logoStyles: {
+    backgroundColor: '#23c929',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 0,
+    minWidth: 38,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10
+  },
+  SelogoStyles: {
+    backgroundColor: '#00FFAB',
+  },
+  storeLogo: {
+    fontSize: 13,
+    fontWeight: "500"
+  },
+  storeStyles: {
+    marginRight: 5,
+    width: "70%"
+  },
+  storeName: {
+    fontSize: 15,
+
+  },
+  optionsContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    zIndex: 5
+  },
+  lineStyle: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    marginTop: -35,
+  },
+  options: {
+    flexDirection: 'row',
+    marginBottom: 30,
     alignItems: 'center',
-    gap:16,
-    width:'100%',
-    backgroundColor: '#1a1a1a',
-    position: 'absolute',
-    zIndex: 999,
+    paddingHorizontal: 5
   },
-  dropdownPart:{
+  iconsStyles: {
+    width: 22
+  },
+  optionsText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  dropdownPart: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems:'center',
-    gap:14
+    alignItems: 'center',
+    gap: 14
   },
-  searchInput:{
+  searchInput: {
     borderWidth: 1,
     borderColor: '#616161',
-    borderRadius:8,
-    paddingLeft:28,
-    paddingRight:4,
+    borderRadius: 8,
+    paddingLeft: 28,
+    paddingRight: 4,
     paddingVertical: 4,
-    flex:1,
-    color:'#b5b5b5'
+    flex: 1,
+    color: '#b5b5b5'
   },
-  toggleBtn:{
-    width:30,
-    height:30,
+  toggleBtn: {
+    width: 30,
+    height: 30,
     display: 'flex',
     flexDirection: 'row',
-    alignItems:'center',
-    justifyContent:'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  searchIconInput:{
-    position:'relative',
+  searchIconInput: {
+    position: 'relative',
     flex: 1,
   },
-  searchIcon:{
-    position:'absolute',
-    top:9,
-    left:5,
+  searchIcon: {
+    position: 'absolute',
+    top: 9,
+    left: 5,
   },
-  msDropdown:{
+  msDropdown: {
     backgroundColor: '#23c929',
-    paddingHorizontal:6,
-    paddingVertical:6,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
     borderRadius: 6,
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: '#4a4a4a'
   },
-  msText:{
+  msText: {
     fontSize: 12,
     opacity: 0.7,
-    color:'#033d05',
+    color: '#033d05',
   },
-  primaryBtn:{
+  primaryBtn: {
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical:6,
+    paddingVertical: 6,
     borderRadius: 6,
-    width:'auto',
+    width: 'auto',
     shadowColor: '#000',
-    shadowOffset: {width: -2, height: 4},
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.8,
     shadowRadius: 3,
     elevation: 2,
     shadowColor: '#171717',
   },
-  btnText:{
-    fontWeight:'500',
-    fontSize:14,
-  },
-  mainContent:{
-    paddingTop: 20,
-    paddingHorizontal:4,
-  },
-  pageTitle:{
-    fontSize: 20,
-    color: '#303030',
-    fontWeight:'600',
-    letterSpacing: 0.4,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-  },
-  pageInnerTitle:{
-    color: '#2e2e2e',
-    fontSize: 24,
-    fontWeight: '700',
-    paddingHorizontal:10,
-    paddingVertical:20,
-  },
-  listData:{
-    paddingHorizontal: 10,
-  },
-  listItem:{
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-  },
-  listItemLast:{
-    borderBottomWidth: 0
-  },
-  listItemName:{
-    fontSize:18,
-    color:'#404040'
-  },
-  salesCard:{
-    backgroundColor:'#fff',
-    paddingHorizontal: 14,
-    paddingVertical: 18,
-    minHeight: 360,
-    height: 360,
-    maxHeight: 360,
-    marginBottom:16,
-  },
-  salesCradTitle:{
-    fontSize: 12,
-    borderBottomWidth:1,
-    borderStyle: 'dotted',
-    width:'',
-    color:'#363636'
-  },
-  sidebarListItem:{
-    marginBottom: 10
-  },
-  sidebarText:{
-    color: '#303030',
-    fontWeight: '600',
-    fontSize: 15,
-    letterSpacing:0.4,
-    flexDirection:'row',
-    display:'flex',
-    alignItems:'center',
-    marginLeft: 4,
-  },
-  sidebarIcon:{
-    marginRight: 0,
-    display: 'flex'
-  },
-  leftPartside:{
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'center',
-    paddingHorizontal:10,
-  },
-  analyticsData:{
-    backgroundColor: '#f1f1f1'
-  },
-  darkContentData:{
-    paddingHorizontal:10,
-    paddingBottom:40,
-    paddingTop:14,
-    display: 'flex',
-    flexDirection:'row',
-    gap: 12
-  },
+
 });
 
 export default App;
