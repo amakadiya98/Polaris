@@ -29,12 +29,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "73969114-6ff2-4522-bb16-eb0ca39636bd"
+        "projectId": "baa5c1fa-0456-42ba-bd17-84b9f6f50d4c"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/73969114-6ff2-4522-bb16-eb0ca39636bd"
     }

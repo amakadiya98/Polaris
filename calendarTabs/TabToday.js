@@ -7,42 +7,17 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 
 export default function TabToday({ onChange, value, ranges, setSelectedDateLabel, setDateRange, dateRange,setShowTab }) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [optionModalVisible, setOptionModalVisible]= useState()
+    const [optionModalVisible, setOptionModalVisible]= useState(false)
     const [selectedValue, setSelectedValue] = useState(null);
-    const data = [
-        { label: "Today", value: "Today" },
-        { label: "Option 2", value: "option2" },
-        { label: "Option 3", value: "option3" },
-        { label: "Today", value: "Today1" },
-        { label: "Today", value: "Today2" },
-        { label: "Today", value: "Today3" },
-        { label: "Today", value: "Today4" },
-        { label: "Today", value: "Today5" },
-
-    ];
-    
-
-    // const renderItem = ({ item }) => (
-    //     <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
-    //         <View style={styles.itemContent}>
-    //             <Text style={styles.itemText}>{item.label}</Text>
-    //             <RadioButton selected={selectedValue === item.value} />
-    //         </View>
-    //     </TouchableOpacity>
-    // );
-    const renderItem = ({ item }) => {
-        // console.log(item,' <----rangeee');
-        return(
-        <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
-            <View style={styles.itemContent}>
-                <Text style={styles.itemText}>{item.title}</Text>
-                <RadioButton selected={selectedValue === item.alias} />
-            </View>
-        </TouchableOpacity>
-    )};
-
+    const [selectedStartDate, setSelectedStartDate] = useState(null);
+    const [selectedEndDate, setSelectedEndDate] = useState(null);
+    const [startDateText, setStartDateText] = useState("");
+    const [endDateText, setEndDateText] = useState("");
+    const [selectedLanguage, setSelectedLanguage] = useState();
 
     useEffect(() => {
+        setStartDateText(formatDate(selectedStartDate));
+        setEndDateText(formatDate(selectedEndDate));
         console.log(selectedStartDate, '<---selectedStartDate')
         console.log(selectedEndDate, '<---selectedEndDate')
         // Update date range whenever selectedStartDate or selectedEndDate changes
@@ -56,6 +31,16 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
         }
     }, [selectedStartDate, selectedEndDate]);
 
+    const renderItem = ({ item }) => {
+        return(
+        <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
+            <View style={styles.itemContent}>
+                <Text style={styles.itemText}>{item.title}</Text>
+                <RadioButton selected={selectedValue === item.alias} />
+            </View>
+        </TouchableOpacity>
+    )};
+
     const handleApply = () => {
         if (selectedStartDate && selectedEndDate) {
             const range = {
@@ -64,8 +49,14 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
             };
             setDateRange(range);
             setShowTab(false);
+            setOptionModalVisible(false);
         }
     };
+
+    const handleCancel = () =>{
+        setShowTab(false);
+        setOptionModalVisible(false);
+    }
 
     const RadioButton = ({ selected }) => (
         <View style={[styles.radioIcon, { borderColor: selected ? 'black' : '#ccc' }]}>
@@ -73,25 +64,15 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
         </View>
     );
 
-    // const handleSelectItem = (item) => {
-    //     setSelectedValue(item.value);
-    //     setModalVisible(false);
-    // };
     const handleSelectItem = (item) => {
         setSelectedValue(item.alias);
-        setSelectedStartDate(item.period.since);
+        setSelectedStartDate(item.period?.since);
+        console.log(selectedStartDate,"selected start date")
         setStartDateText(formatDate(selectedStartDate))
-        setSelectedEndDate(item.period.until);
+        setSelectedEndDate(item.period?.until);
         setEndDateText(formatDate(selectedEndDate));
         setOptionModalVisible(false);
     };
-
-    const [selectedStartDate, setSelectedStartDate] = useState(null);
-    const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [startDateText, setStartDateText] = useState("");
-    const [endDateText, setEndDateText] = useState("");
-    const [selectedLanguage, setSelectedLanguage] = useState();
-
 
     const currentDate = new Date().toLocaleDateString("en-US", {
         year: "numeric",
@@ -229,7 +210,7 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleCancel}>
                         <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={handleApply}>

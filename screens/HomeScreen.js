@@ -11,6 +11,7 @@ import moment from 'moment';
 import axios from 'axios';
 import {urls} from '../config/url';
 import {baseUrl} from '../config/url'
+import RNSVGSvgView from 'react-native-svg'
 
 import {
   Text,
@@ -105,12 +106,7 @@ export default function HomeScreen() {
   
   const today = new Date(new Date().setHours(0, 0, 0, 0));
   const lastYear = new Date(
-    new Date(new Date().setDate(today.getDate() - 365)).setHours(
-      0,
-      0,
-      0,
-      0
-    )
+    new Date(new Date().setDate(today.getDate() - 365)).setHours(0, 0, 0, 0)
   )
 
   const yesterday = new Date(
@@ -178,7 +174,7 @@ export default function HomeScreen() {
       alias: "yesterday",
       period: {
         since: yesterday,
-        until: yesterday,
+        until: today,
       },
     },
     {
@@ -320,7 +316,7 @@ export default function HomeScreen() {
       alias: "yesterday",
       period: {
         since: yesterday,
-        until: yesterday,
+        until: today,
       },
     },
     {
@@ -506,7 +502,7 @@ export default function HomeScreen() {
             <RightTopArrow name="arrow-top-right" size={18} color="#2D765A" style={{ marginTop: -12 }} />
             <Text style={styles.percentageText}>15%</Text>
           </View>
-          {/* <LineChart
+          <LineChart
             data={chartDataa}
             width={Dimensions.get('window').width + 50} // Use the increased width
             height={220}
@@ -518,7 +514,7 @@ export default function HomeScreen() {
             style={{
               paddingRight: 50, // Add padding to the right
             }}
-          /> */}
+          />
           <View style={styles.labelcontainer}>
             <View style={styles.dataLabel}>
               <View style={styles.gradientLine}>
@@ -530,14 +526,14 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Total sales"
           chart="line"
           data={data.totalSales}
           selectedDatelabel={selectedDatelabel}
-        /> */}
+        /> 
 
         <Card
           dateRange={dateRange}
@@ -559,8 +555,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />  */}
-        <Card
+        /> */}
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Online store conversion rate"
@@ -569,8 +565,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />  
-        {/* <Card
+        />   */}
+       {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Total orders"
@@ -580,7 +576,7 @@ export default function HomeScreen() {
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
         />  */}
-        {/* <Card
+         {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Average order value"
@@ -594,15 +590,15 @@ export default function HomeScreen() {
           showTotal={true}
         /> */}
 
-        <Card
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Retail sales by staff at register"
           chart="bar"
           data={[]} //{data.totalSalesBySource}
           selectedDatelabel={selectedDatelabel}
-        /> 
-        <Card
+        />  */}
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Sessions by device type"
@@ -611,8 +607,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />  
-        <Card
+        />   */}
+        {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Retail Sales by POS location"
@@ -621,7 +617,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}c
-        /> 
+        />  */}
 
         <View style={styles.sessionCard}>
           <View style={styles.sassionCardHeader}><Text style={styles.salesCradTitle}>Online store conversion rate</Text>

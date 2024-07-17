@@ -8,10 +8,17 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompareDateRange,compareDateRange, setShowTabYesterday}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
+    const [selectedStartDate, setSelectedStartDate] = useState(null);
+    const [selectedEndDate, setSelectedEndDate] = useState(null);
+    const [startDateText, setStartDateText] = useState("");
+    const [endDateText, setEndDateText] = useState("");
+    const [selectedLanguage, setSelectedLanguage] = useState();
 
     useEffect(() => {
         console.log(selectedStartDate,'<-----compareStartDate');
         console.log(selectedEndDate,'<------compareEndDate');
+        setStartDateText(formatDate(selectedStartDate));
+        setEndDateText(formatDate(selectedEndDate));
         // Update date range whenever selectedStartDate or selectedEndDate changes
         if (selectedStartDate || selectedEndDate) {
             const range = {
@@ -34,26 +41,6 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
         }
     };
 
-    const data = [
-        { label: "Today", value: "Today" },
-        { label: "Option 2", value: "option2" },
-        { label: "Option 3", value: "option3" },
-        { label: "Today", value: "Today1" },
-        { label: "Today", value: "Today2" },
-        { label: "Today", value: "Today3" },
-        { label: "Today", value: "Today4" },
-        { label: "Today", value: "Today5" },
-
-    ];
-
-    // const renderItem = ({ item }) => (
-    //     <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
-    //         <View style={styles.itemContent}>
-    //             <Text style={styles.itemText}>{item.label}</Text>
-    //             <RadioButton selected={selectedValue === item.value} />
-    //         </View>
-    //     </TouchableOpacity>
-    // );
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
             <View style={styles.itemContent}>
@@ -69,25 +56,19 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
         </View>
     );
 
-    // const handleSelectItem = (item) => {
-    //     setSelectedValue(item.value);
-    //     setModalVisible(false);
-    // };
     const handleSelectItem = (item) => {
         setSelectedValue(item.alias);
-        setSelectedStartDate(item.period.since);
+        setSelectedStartDate(item.period?.since);
         setStartDateText(formatDate(selectedStartDate))
-        setSelectedEndDate(item.period.until);
+        setSelectedEndDate(item.period?.until);
         setEndDateText(formatDate(selectedEndDate));
         setModalVisible(false);
     };
 
-    const [selectedStartDate, setSelectedStartDate] = useState(null);
-    const [selectedEndDate, setSelectedEndDate] = useState(null);
-    const [startDateText, setStartDateText] = useState("");
-    const [endDateText, setEndDateText] = useState("");
-    const [selectedLanguage, setSelectedLanguage] = useState();
-
+    const handleCancel = () =>{
+        setShowTabYesterday(false);
+        setModalVisible(false);
+    }
 
     const currentDate = new Date().toLocaleDateString("en-US", {
         year: "numeric",
@@ -220,7 +201,7 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleCancel}>
                         <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={handleApply}>

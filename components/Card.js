@@ -7,14 +7,10 @@ import { formatCurrency, formatNumbers } from '../utils/currency';
 import moment from 'moment';
 
 function determineGranularity(data) {
-  // console.log(data, 'nameeee')
-  // console.log(data, '<-----dataaaa')
-  console.log(data, '<---data for Granularity ')
+  console.log(data, '<=== data in determineGranularity')
   const startDate = new Date(data[0]?.name?.split(" - ")[0]);
-  // console.log(startDate, '<---startDate')
   const endDate = new Date(data[0]?.name?.split(" - ")[1]);
   const diffTime = Math.abs(endDate - startDate);
-  // console.log(diffTime, 'difference')
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays <= 1) {
@@ -181,7 +177,7 @@ const titleFormatter = (value) => {
 }
 
 // changing name format to fr
-console.log(data,'data in card')
+// console.log(data,'data in card')
 // data = data.data
 data = data?.map(item => item.from && item.to ? { ...item, name: selectedDatelabel } : item) // formatDateRange(item.from, item.to)
 // summing up same key data for better calculations
@@ -217,7 +213,7 @@ data = data?.map(item => {
 
 console.log(granularity, '<----- granularity')
 
-console.log(data, '<---formated data')
+// console.log(data, '<---formated data')
 const chartData = {
   labels: data?.[0]?.data?.map(item => item.key) || [],
   datasets: [
