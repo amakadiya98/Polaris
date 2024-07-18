@@ -3,22 +3,36 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 import RightTopArrow from 'react-native-vector-icons/MaterialCommunityIcons';
 import { LineChart } from 'react-native-chart-kit';
+import Barchart from './BarChart'
 import { formatCurrency, formatNumbers } from '../utils/currency';
 import moment from 'moment';
 
+function parseDateString(dateString) {
+  const [month, day, year] = dateString.split(" ");
+  return new Date(`${month} ${day.replace(",", "")}, ${year}`);
+}
 function determineGranularity(data) {
-  console.log(data, '<=== data in determineGranularity')
-  const startDate = new Date(data[0]?.name?.split(" - ")[0]);
-  const endDate = new Date(data[0]?.name?.split(" - ")[1]);
-  const diffTime = Math.abs(endDate - startDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  console.log(data, '<=== data in determineGranularity');
+  const dateRange = data[0]?.name?.split(" - ");
+  const startStr = dateRange[0].trim();
+  const endStr = dateRange[1].trim();
+
+  console.log(startStr, "<=== startStr in determineGranularity");
+  console.log(endStr, "<=== endStr in determineGranularity");
+
+  const startDate = moment(startStr, "MMMM D, YYYY");
+  const endDate = moment(endStr, "MMMM D, YYYY");
+
+  const diffDays = endDate.diff(startDate, 'days');
+  console.log(diffDays, 'diffDays');
 
   if (diffDays <= 1) {
-      return 'hours';
+    return 'hours';
   } else if (diffDays <= 90) {
-      return 'days';
+    return 'days';
   } else {
-      return 'months';
+    return 'months';
   }
 }
 
@@ -213,12 +227,11 @@ data = data?.map(item => {
 
 console.log(granularity, '<----- granularity')
 
-// console.log(data, '<---formated data')
 const chartData = {
-  labels: data?.[0]?.data?.map(item => item.key) || [],
+  labels: data?.[0]?.data?.slice(0, 5).map(item => item.key) || [],
   datasets: [
     {
-      data: data?.[0]?.data?.map(item => item.value) || [],
+      data: data?.[0]?.data?.slice(0, 5).map(item => item.value) || [],
     }
   ]
 };
@@ -246,6 +259,9 @@ let sum
   const getChart = (chart) => {
     
     switch (chart) {
+       
+
+
       case 'line':
         return (
           <>
@@ -261,10 +277,15 @@ let sum
               withVerticalLines={false}
               withDots={false}
               bezier
+              style={{ paddingRight: 50 }}
               formatYLabel={(yValue) => `${isCurrency && storeConfig?.currency_alignment === 'left' ? storeConfig.currency_symbol : ''}${isCurrency ? formatCurrency(yValue) : yValue}${isCurrency && (!storeConfig?.currency_alignment || storeConfig?.currency_alignment === 'right') ? storeConfig?.currency_symbol : ''}`}
             />
           </>
         );
+      case 'bar':
+        return (
+          <Barchart/>
+        )
       default:
         return <Text>No data found for this chart</Text>;
     }
@@ -312,25 +333,6 @@ let sum
   );
 };
 
-// const chartConfig = {
-//   backgroundGradientFromOpacity: 0,
-//   backgroundGradientToOpacity: 0,
-//   color: (opacity = 1) => '#53B7D5',
-//   labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-//   style: {
-//     borderRadius: 16,
-//   },
-//   propsForBackgroundLines: {
-//     strokeDasharray: '',
-//     stroke: 'rgba(0, 0, 0, 0.1)',
-//   },
-//   strokeWidth: 2,
-//   fillShadowGradientFromOpacity: 0.1,
-//   fillShadowGradientToOpacity: 0,
-//   yAxisSuffix: '',
-//   yAxisInterval: 1,
-// };
-
 const chartConfig = {
   backgroundGradientFromOpacity: 0,
   backgroundGradientToOpacity: 0,
@@ -346,13 +348,8 @@ const chartConfig = {
   strokeWidth: 2,
   fillShadowGradientFromOpacity: 0.1,
   fillShadowGradientToOpacity: 0,
-  yAxisLabel: '', // Add this line if you want a specific label prefix/suffix
-  yAxisInterval: 1, // Keep this to set interval to 1
-  decimalPlaces: 2, // If you want to show 2 decimal places, adjust as needed
-  propsForLabels: {
-    fontSize: 12, // Adjust this to control font size of labels
-  },
-  yLabelsOffset: 0, // Adjust this if you want to offset the y-axis labels
+  yAxisSuffix: '',
+  yAxisInterval: 1,
 };
 
 const styles = StyleSheet.create({

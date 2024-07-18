@@ -91,7 +91,7 @@ export default function HomeScreen() {
       const data = await response.json();
       setData(data);
       console.log('Response Data:', data);
-      console.log(data.totalSales, 'totalsales')
+      console.log(data.conversionRates, 'conversionRates')
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -533,7 +533,7 @@ export default function HomeScreen() {
           chart="line"
           data={data.totalSales}
           selectedDatelabel={selectedDatelabel}
-        /> 
+        />
 
         <Card
           dateRange={dateRange}
@@ -546,7 +546,7 @@ export default function HomeScreen() {
 
         /> 
 
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Online store sessions"
@@ -555,18 +555,19 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        /> */}
+        />
+
         {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Online store conversion rate"
           chart="data"
-          data={data.conversionRates || []}
+          data= {[]} //data.conversionRates
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
         />   */}
-       {/* <Card
+       <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Total orders"
@@ -575,8 +576,8 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />  */}
-         {/* <Card
+        /> 
+         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Average order value"
@@ -588,7 +589,7 @@ export default function HomeScreen() {
             (totalSales / (totalOrders || 1)) * (totalOrders > 10 && totalOrders <= 20 ? generateRandomNumberFromRange(0.97, 0.98, 2) : totalOrders > 20 ? generateRandomNumberFromRange(0.94, 0.96, 2) : 1),
           ]}
           showTotal={true}
-        /> */}
+        />
 
         {/* <Card
           dateRange={dateRange}
@@ -598,7 +599,7 @@ export default function HomeScreen() {
           data={[]} //{data.totalSalesBySource}
           selectedDatelabel={selectedDatelabel}
         />  */}
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Sessions by device type"
@@ -607,7 +608,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />   */}
+        />  
         {/* <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
