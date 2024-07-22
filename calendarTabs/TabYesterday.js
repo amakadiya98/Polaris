@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 
-export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompareDateRange,compareDateRange, setShowTabYesterday}) {
+export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompareDateRange,compareDateRange, setShowTabYesterday,selectedValueRight, setSelectedValueRight}) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(null);
+    // const [selectedValueRight, setSelectedValueRight] = useState(null);
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
     const [startDateText, setStartDateText] = useState("");
@@ -45,7 +45,7 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
         <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
             <View style={styles.itemContent}>
                 <Text style={styles.itemText}>{item.title}</Text>
-                <RadioButton selected={selectedValue === item.alias} />
+                <RadioButton selected={selectedValueRight === item.alias} />
             </View>
         </TouchableOpacity>
     );
@@ -57,7 +57,7 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
     );
 
     const handleSelectItem = (item) => {
-        setSelectedValue(item.alias);
+        setSelectedValueRight(item.alias);
         setSelectedStartDate(item.period?.since);
         setStartDateText(formatDate(selectedStartDate))
         setSelectedEndDate(item.period?.until);
@@ -113,7 +113,7 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
             <View style={styles.customContainer}>
                 <View style={styles.customView}>
                     <TouchableOpacity style={styles.pickerContainer} onPress={() => setModalVisible(true)}>
-                        <Text style={styles.selectedText}>{selectedValue ? selectedValue : "Previous"}
+                        <Text style={styles.selectedText}>{selectedValueRight ? selectedValueRight : "Previous"}
                             </Text>
                             <Image
                                style={{width:18,height:18,padding:10}}

@@ -30,6 +30,8 @@ export default function HomeScreen() {
   const [dateRange, setDateRange] = useState({ start: today, end: today })
   const [compareDateRange, setCompareDateRange] = useState({ start: today, end: today })
   const [selectedDatelabel, setSelectedDateLabel] = useState('')
+  const [selectedValueLeft, setSelectedValueLeft] = useState(null);
+  const [selectedValueRight, setSelectedValueRight] = useState(null);
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [data, setData] = useState({
@@ -91,7 +93,7 @@ export default function HomeScreen() {
       const data = await response.json();
       setData(data);
       console.log('Response Data:', data);
-      console.log(data.conversionRates, 'conversionRates')
+      console.log(data.visitorsByDevice, "donut chart data")
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -100,7 +102,7 @@ export default function HomeScreen() {
     }
   };
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || loading) {
     return <Text>Loading...</Text>;
   }
   
@@ -446,12 +448,9 @@ export default function HomeScreen() {
     setCompareDateRange(range)
   }
 
-  // console.log(selectedDatelabel, 'selectedDatelabel')
-
   const totalOrders = data?.totalOrders?.[0]?.data?.reduce((total, current) => total + current.value, 0) || 0
   const totalSales = data?.totalSales?.[0]?.data?.reduce((total, current) => total + current.value, 0)
 
-  // console.log(data, ' <== data being passed everywhere')
 
   return (
 
@@ -478,10 +477,10 @@ export default function HomeScreen() {
         {/* tab */}
         <View style={styles.darkContentData}>
           <Pressable style={styles.primaryBtn} onPress={toggleTab}>
-            <Text style={styles.btnText}><Icon name="calendar" color="black" size={15} />Today</Text>
+            <Text style={styles.btnText}><Icon name="calendar" color="black" size={15} />{ selectedValueLeft? selectedValueLeft : 'Today'}</Text>
           </Pressable>
           <Pressable style={styles.primaryBtn} onPress={toggleTabYesterday}>
-            <Text style={styles.btnText}>Compare to: Yesterday</Text>
+            <Text style={styles.btnText}>Compare to: {selectedValueRight? selectedValueRight : 'yesterday'}</Text>
           </Pressable>
         </View>
         <TouchableOpacity style={styles.checkbox} onPress={handlePress}>
@@ -491,8 +490,8 @@ export default function HomeScreen() {
           <Text style={styles.label}>Auto-refresh</Text>
         </TouchableOpacity>
 
-        {showTab && <TabToday onChange={onDateRangeChange} value={dateRange} ranges={ranges} setSelectedDateLabel={setSelectedDateLabel} setDateRange={setDateRange} dateRange={dateRange} setShowTab={setShowTab}/>}
-        {showTabYesterday && <TabYesterday onChange={onCompareDateRangeChange} value={compareDateRange} label='Compare: ' ranges={compareRanges} setSelectedDateLabel={setSelectedDateLabel} setCompareDateRange={setCompareDateRange} compareDateRange={compareDateRange} setShowTabYesterday={setShowTabYesterday}/>}
+        {showTab && <TabToday onChange={onDateRangeChange} value={dateRange} ranges={ranges} setSelectedDateLabel={setSelectedDateLabel} setDateRange={setDateRange} dateRange={dateRange} setShowTab={setShowTab} selectedValueLeft={selectedValueLeft} setSelectedValueLeft={setSelectedValueLeft}/>}
+        {showTabYesterday && <TabYesterday onChange={onCompareDateRangeChange} value={compareDateRange} label='Compare: ' ranges={compareRanges} setSelectedDateLabel={setSelectedDateLabel} setCompareDateRange={setCompareDateRange} compareDateRange={compareDateRange} setShowTabYesterday={setShowTabYesterday} selectedValueRight={selectedValueRight} setSelectedValueRight={setSelectedValueRight}/>}
         <View style={styles.salesCard}>
           <View style={styles.salesCardHeader}>
             <TouchableOpacity><Text style={styles.salesCradTitle}>Average Order Value</Text></TouchableOpacity>
@@ -557,7 +556,7 @@ export default function HomeScreen() {
           showTotal={true}
         />
 
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Online store conversion rate"
@@ -566,7 +565,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />   */}
+        />  
        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -591,14 +590,14 @@ export default function HomeScreen() {
           showTotal={true}
         />
 
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Retail sales by staff at register"
           chart="bar"
           data={[]} //{data.totalSalesBySource}
           selectedDatelabel={selectedDatelabel}
-        />  */}
+        /> 
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -609,7 +608,7 @@ export default function HomeScreen() {
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
         />  
-        {/* <Card
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Retail Sales by POS location"
@@ -618,7 +617,7 @@ export default function HomeScreen() {
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}c
-        />  */}
+        /> 
 
         <View style={styles.sessionCard}>
           <View style={styles.sassionCardHeader}><Text style={styles.salesCradTitle}>Online store conversion rate</Text>

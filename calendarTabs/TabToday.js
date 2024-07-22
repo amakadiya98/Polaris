@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 
-export default function TabToday({ onChange, value, ranges, setSelectedDateLabel, setDateRange, dateRange,setShowTab }) {
+export default function TabToday({ onChange, value, ranges, setSelectedDateLabel, setDateRange, dateRange,setShowTab, selectedValueLeft, setSelectedValueLeft}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [optionModalVisible, setOptionModalVisible]= useState(false)
-    const [selectedValue, setSelectedValue] = useState(null);
+    // const [selectedValueLeft, setSelectedValueLeft] = useState(null);
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
     const [startDateText, setStartDateText] = useState("");
@@ -36,7 +36,7 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
         <TouchableOpacity style={styles.item} onPress={() => handleSelectItem(item)}>
             <View style={styles.itemContent}>
                 <Text style={styles.itemText}>{item.title}</Text>
-                <RadioButton selected={selectedValue === item.alias} />
+                <RadioButton selected={selectedValueLeft === item.alias} />
             </View>
         </TouchableOpacity>
     )};
@@ -65,7 +65,7 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
     );
 
     const handleSelectItem = (item) => {
-        setSelectedValue(item.alias);
+        setSelectedValueLeft(item.alias);
         setSelectedStartDate(item.period?.since);
         console.log(selectedStartDate,"selected start date")
         setStartDateText(formatDate(selectedStartDate))
@@ -124,7 +124,7 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
             <ScrollView style={styles.customContainer}>
                 <View style={styles.customView}>
                     <TouchableOpacity style={styles.pickerContainer} onPress={() => setOptionModalVisible(true)}>
-                        <Text style={styles.selectedText}>{selectedValue ? selectedValue : "Today"}
+                        <Text style={styles.selectedText}>{selectedValueLeft ? selectedValueLeft : "Today"}
                         </Text>
                         <Image
                             style={{ width: 18, height: 18, padding: 10 }}
