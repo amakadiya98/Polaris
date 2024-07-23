@@ -6,6 +6,8 @@ import Svg, { Circle } from 'react-native-svg';
 export default function DonutChartComponent({ data }) {
   const screenWidth = Dimensions.get('window').width;
 
+  console.log( data, "data in donut chart component")
+
   // Check if data is valid
   const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (Array.isArray(data) && data.every(item => !item.data || item.data.length === 0));
 
@@ -17,11 +19,12 @@ export default function DonutChartComponent({ data }) {
     );
   }
 
-  // Process data if it's available
-  const chartData = data.map(item => ({
+  const Colors = ['#17A9E9', '#7B58EC', '#5E82EE', '#D75FB7'];
+
+  const chartData = data.map((item, index) => ({
     name: item?.name,
-    population: parseInt(item?.value, 10), 
-    color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+    population: parseInt(item?.value, 10),
+    color: Colors[index % fixedColors.length],
     legendFontColor: '#7F7F7F',
     legendFontSize: 15,
   }));

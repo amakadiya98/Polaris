@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 
-export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompareDateRange,compareDateRange, setShowTabYesterday,selectedValueRight, setSelectedValueRight}) {
+export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompareDateRange,compareDateRange, setShowTabYesterday,selectedValueRight, setSelectedValueRight, setSelectedFromRightCalender}) {
     const [modalVisible, setModalVisible] = useState(false);
     // const [selectedValueRight, setSelectedValueRight] = useState(null);
     const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -14,21 +14,21 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
     const [endDateText, setEndDateText] = useState("");
     const [selectedLanguage, setSelectedLanguage] = useState();
 
-    useEffect(() => {
-        console.log(selectedStartDate,'<-----compareStartDate');
-        console.log(selectedEndDate,'<------compareEndDate');
-        setStartDateText(formatDate(selectedStartDate));
-        setEndDateText(formatDate(selectedEndDate));
-        // Update date range whenever selectedStartDate or selectedEndDate changes
-        if (selectedStartDate || selectedEndDate) {
-            const range = {
-                start: formatDate(selectedStartDate),
-                end: formatDate(selectedEndDate)
-            };
-            setCompareDateRange(range);
-            console.log(compareDateRange, '<-----compareDateRange')
-        }
-    }, [selectedStartDate, selectedEndDate]);
+    // useEffect(() => {
+    //     console.log(selectedStartDate,'<-----compareStartDate');
+    //     console.log(selectedEndDate,'<------compareEndDate');
+    //     setStartDateText(formatDate(selectedStartDate));
+    //     setEndDateText(formatDate(selectedEndDate));
+    //     // Update date range whenever selectedStartDate or selectedEndDate changes
+    //     if (selectedStartDate || selectedEndDate) {
+    //         const range = {
+    //             start: formatDate(selectedStartDate),
+    //             end: formatDate(selectedEndDate)
+    //         };
+    //         setCompareDateRange(range);
+    //         console.log(compareDateRange, '<-----compareDateRange')
+    //     }
+    // }, [selectedStartDate, selectedEndDate]);
 
     const handleApply = () => {
         if (selectedStartDate && selectedEndDate) {
@@ -38,6 +38,8 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
             };
             setCompareDateRange(range);
             setShowTabYesterday(false);
+            console.log(selectedStartDate, '<---selected compare StartDate')
+            console.log(selectedEndDate, '<---selected compare EndDate')
         }
     };
 
@@ -99,6 +101,7 @@ export default function Tab({onChange,value,ranges,setSelectedDateLabel,setCompa
             }
             setStartDateText(date ? formatDate(date) : "");
         }
+        setSelectedFromRightCalender(true);
     }
 
     const formatDate = (date) => {

@@ -1,5 +1,5 @@
 import react from "react";
-import { View, Dimensions } from "react-native";
+import { View, Dimensions ,Text, StyleSheet} from "react-native";
 import { LineChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import { formatCurrency, formatNumbers } from '../utils/currency';
@@ -141,14 +141,6 @@ function fillMissingMonthsWithZeros(data, from, to) {
     return filledData;
 }
 
-function generateYLabels(minValue, maxValue, count = 5) {
-    const step = (maxValue - minValue) / (count - 1);
-    const labels = [];
-    for (let i = 0; i < count; i++) {
-      labels.push(minValue + i * step);
-    }
-    return labels;
-  }
 
 const LineChartComponent = (
     {
@@ -162,6 +154,14 @@ const LineChartComponent = (
         total
     }
 ) => {
+
+    if (!data || data.length === 0) {
+        return (
+            <View>
+                <Text>No data available for this date range</Text>
+            </View>
+        );
+    }
 
     const datalabel = data?.map(item => ({
         from: item.from,
@@ -232,11 +232,17 @@ const LineChartComponent = (
 
     console.log(granularity, '<----- granularity')
 
+    // const filterLabels = (labels, interval) => {
+    //     return labels.filter((label, index) => index % interval === 0);
+    // }
+
+    // const filteredLabels = filterLabels(data[0]?.data.map(item => item.key), 4).slice(0,4);
+
     const chartData = {
-        labels: data?.[0]?.data?.slice(0, 5).map(item => item.key) || [],
+        labels: data?.[0]?.data?.slice(0, 5).map(item => item.key) ,
         datasets: [
             {
-                data: data?.[0]?.data?.slice(0, 5).map(item => item.value) || [],
+                data: data?.[0]?.data?.slice(0, 5).map(item => item.value),
             }
         ]
     };
@@ -261,9 +267,18 @@ const LineChartComponent = (
         singleData = data?.[0]?.data?.[0]
     }
 
+    const yValues = chartData.datasets[0].data;
+    const maxYValue = Math.max(...yValues);
+    const minYValue = Math.min(...yValues);
+    const interval = (maxYValue - minYValue) / 4;
+
+    console.log(interval, "interval")
+    console.log(chartData.datasets, 'chartData datasets');
 
     return (
         <View>
+            <Text style={styles.chartHeadText}>{isCurrency && (storeConfig?.currency_alignment === 'left') ? storeConfig.currency_symbol : ''}{formatNumbers((total ? total[0] : sum) || 0).replace('.00', '')} {isCurrency && (!storeConfig?.currency_alignment || storeConfig?.currency_alignment === 'right') ? storeConfig?.currency_symbol : ''}</Text>
+
             <LineChart
                 // data={{
                 //   labels: [],
@@ -277,6 +292,7 @@ const LineChartComponent = (
                 withDots={false}
                 bezier
                 style={{ paddingRight: 50 }}
+                yAxisInterval={interval}
                 formatYLabel={(yValue) => `${isCurrency && storeConfig?.currency_alignment === 'left' ? storeConfig.currency_symbol : ''}${isCurrency ? formatCurrency(yValue) : yValue}${isCurrency && (!storeConfig?.currency_alignment || storeConfig?.currency_alignment === 'right') ? storeConfig?.currency_symbol : ''}`}
             />
         </View>
@@ -301,5 +317,16 @@ const chartConfig = {
     yAxisSuffix: '',
     yAxisInterval: 1,
   };
+
+  const styles = StyleSheet.create({
+    chartHeadText: {
+        marginTop: 5,
+        marginBottom: 20,
+        fontSize: 22,
+        fontWeight: "700",
+        color: "black",
+        fontFamily: "Roboto-Regular"
+      },
+  })
 
   export default LineChartComponent;

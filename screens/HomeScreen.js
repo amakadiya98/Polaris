@@ -9,8 +9,8 @@ import { LineChart } from 'react-native-chart-kit';
 import Card from '../components/Card';
 import moment from 'moment';
 import axios from 'axios';
-import {urls} from '../config/url';
-import {baseUrl} from '../config/url'
+import { urls } from '../config/url';
+import { baseUrl } from '../config/url'
 import RNSVGSvgView from 'react-native-svg'
 
 import {
@@ -29,9 +29,11 @@ export default function HomeScreen() {
   const [isChecked, setIsChecked] = useState(false);
   const [dateRange, setDateRange] = useState({ start: today, end: today })
   const [compareDateRange, setCompareDateRange] = useState({ start: today, end: today })
-  const [selectedDatelabel, setSelectedDateLabel] = useState('')
-  const [selectedValueLeft, setSelectedValueLeft] = useState(null);
-  const [selectedValueRight, setSelectedValueRight] = useState(null);
+  const [selectedDatelabel, setSelectedDateLabel] = useState({})
+  const [selectedValueLeft, setSelectedValueLeft] = useState(' Today');
+  const [selectedValueRight, setSelectedValueRight] = useState(' yesterday');
+  const [selectedFromLeftCalender, setSelectedFromLeftCalender] = useState(false);
+  const [selectedFromRightCalender, setSelectedFromRightCalender] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [data, setData] = useState({
@@ -43,7 +45,7 @@ export default function HomeScreen() {
     totalSalesByChannel: [],
   })
 
-  
+
   const [fontsLoaded] = useFonts({
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     "Roboto-Regular": require('../assets/fonts/Roboto-Regular.ttf')
@@ -53,23 +55,30 @@ export default function HomeScreen() {
     fetchData();
   }, [dateRange, compareDateRange])
 
+  useEffect(() => {
+    setSelectedDateLabel({
+      start: moment(dateRange.start).format('MMMM D, YYYY'),
+      end: moment(compareDateRange.end).format('MMMM D, YYYY'),
+    });
+  }, [dateRange, compareDateRange]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      console.log(JSON.stringify({
-        dateRange: {
-          start: moment.utc(dateRange.start).startOf('day').toDate(),
-          end: moment.utc(dateRange.end).endOf('day').toDate(),
-        },
-        compareDateRange: compareDateRange && compareDateRange.start
-          ? {
-            start: moment.utc(compareDateRange.start).startOf('day').toDate(),
-            end: moment.utc(compareDateRange.end).endOf('day').toDate(),
-          }
-          : null,
-      }), ' <=== request body..')
+
+      // console.log(JSON.stringify({
+      //   dateRange: {
+      //     start: moment.utc(dateRange.start).startOf('day').toDate(),
+      //     end: moment.utc(dateRange.end).endOf('day').toDate(),
+      //   },
+      //   compareDateRange: compareDateRange && compareDateRange.start
+      //     ? {
+      //       start: moment.utc(compareDateRange.start).startOf('day').toDate(),
+      //       end: moment.utc(compareDateRange.end).endOf('day').toDate(),
+      //     }
+      //     : null,
+      // }), ' <=== request body..')
 
       const response = await fetch(`${baseUrl}${urls.analytics()}`, {
         method: 'POST',
@@ -89,11 +98,11 @@ export default function HomeScreen() {
             : null,
         }),
       });
-  
+
       const data = await response.json();
       setData(data);
       console.log('Response Data:', data);
-      console.log(data.visitorsByDevice, "donut chart data")
+      console.log(JSON.stringify(data.totalSales, null, 2),'<===total sales');
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -105,7 +114,7 @@ export default function HomeScreen() {
   if (!fontsLoaded || loading) {
     return <Text>Loading...</Text>;
   }
-  
+
   const today = new Date(new Date().setHours(0, 0, 0, 0));
   const lastYear = new Date(
     new Date(new Date().setDate(today.getDate() - 365)).setHours(0, 0, 0, 0)
@@ -115,17 +124,16 @@ export default function HomeScreen() {
     new Date(new Date().setDate(today.getDate() - 1)).setHours(0, 0, 0, 0)
   );
 
-
   // console.log(data, "data")
   // 
   function generateRandomNumberFromRange(min, max, decimalPlaces) {
     var rand = Math.random() * (max - min) + min;
     var power = Math.pow(10, decimalPlaces);
     return Math.floor(rand * power) / power;
-  
+
     // return Math.random() * (max - min) + min;
   }
-  
+
   const handlePress = () => {
     setIsChecked(!isChecked);
   };
@@ -477,10 +485,10 @@ export default function HomeScreen() {
         {/* tab */}
         <View style={styles.darkContentData}>
           <Pressable style={styles.primaryBtn} onPress={toggleTab}>
-            <Text style={styles.btnText}><Icon name="calendar" color="black" size={15} />{ selectedValueLeft? selectedValueLeft : 'Today'}</Text>
+            <Text style={styles.btnText}><Icon name="calendar" color="black" size={15} />{selectedFromLeftCalender ? `${moment(dateRange.start).format('MMMM D, YYYY')} - ${moment(dateRange.end).format('MMMM D, YYYY')}` : selectedValueLeft}</Text>
           </Pressable>
           <Pressable style={styles.primaryBtn} onPress={toggleTabYesterday}>
-            <Text style={styles.btnText}>Compare to: {selectedValueRight? selectedValueRight : 'yesterday'}</Text>
+            <Text style={styles.btnText}>Compare to: {selectedFromRightCalender ? `${moment(compareDateRange.start).format('MMMM D, YYYY')} - ${moment(compareDateRange.end).format('MMMM D, YYYY')}` : selectedValueRight}</Text>
           </Pressable>
         </View>
         <TouchableOpacity style={styles.checkbox} onPress={handlePress}>
@@ -489,10 +497,9 @@ export default function HomeScreen() {
           </View>
           <Text style={styles.label}>Auto-refresh</Text>
         </TouchableOpacity>
-
-        {showTab && <TabToday onChange={onDateRangeChange} value={dateRange} ranges={ranges} setSelectedDateLabel={setSelectedDateLabel} setDateRange={setDateRange} dateRange={dateRange} setShowTab={setShowTab} selectedValueLeft={selectedValueLeft} setSelectedValueLeft={setSelectedValueLeft}/>}
-        {showTabYesterday && <TabYesterday onChange={onCompareDateRangeChange} value={compareDateRange} label='Compare: ' ranges={compareRanges} setSelectedDateLabel={setSelectedDateLabel} setCompareDateRange={setCompareDateRange} compareDateRange={compareDateRange} setShowTabYesterday={setShowTabYesterday} selectedValueRight={selectedValueRight} setSelectedValueRight={setSelectedValueRight}/>}
-        <View style={styles.salesCard}>
+        {showTab && <TabToday onChange={onDateRangeChange} value={dateRange} ranges={ranges} setSelectedDateLabel={setSelectedDateLabel} setDateRange={setDateRange} dateRange={dateRange} setShowTab={setShowTab} selectedValueLeft={selectedValueLeft} setSelectedValueLeft={setSelectedValueLeft} setSelectedFromLeftCalender={setSelectedFromLeftCalender} />}
+        {showTabYesterday && <TabYesterday onChange={onCompareDateRangeChange} value={compareDateRange} label='Compare: ' ranges={compareRanges} setSelectedDateLabel={setSelectedDateLabel} setCompareDateRange={setCompareDateRange} compareDateRange={compareDateRange} setShowTabYesterday={setShowTabYesterday} selectedValueRight={selectedValueRight} setSelectedValueRight={setSelectedValueRight} setSelectedFromRightCalender={setSelectedFromRightCalender} />}
+        {/* <View style={styles.salesCard}>
           <View style={styles.salesCardHeader}>
             <TouchableOpacity><Text style={styles.salesCradTitle}>Average Order Value</Text></TouchableOpacity>
             <Material style={styles.salesIcon} name="text-box-search-outline" color="gray" size={20} /></View>
@@ -524,7 +531,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
-        </View>
+        </View> */}
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -543,7 +550,7 @@ export default function HomeScreen() {
           selectedDatelabel={selectedDatelabel}
           showTotal={false}
 
-        /> 
+        />
 
         <Card
           dateRange={dateRange}
@@ -559,24 +566,14 @@ export default function HomeScreen() {
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
-          title="Online store conversion rate"
-          chart="data"
-          data= {[]} //data.conversionRates
-          isCurrency={false}
-          selectedDatelabel={selectedDatelabel}
-          showTotal={true}
-        />  
-       <Card
-          dateRange={dateRange}
-          storeConfig={data.storeConfig}
           title="Total orders"
           chart="line"
           data={data.totalOrders || []}
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        /> 
-         <Card
+        />
+        <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Average order value"
@@ -597,17 +594,17 @@ export default function HomeScreen() {
           chart="bar"
           data={[]} //{data.totalSalesBySource}
           selectedDatelabel={selectedDatelabel}
-        /> 
+        />
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
           title="Sessions by device type"
           chart="donut"
-          data={[{...data.visitorsByDevice}] || []}
+          data={[{ ...data.visitorsByDevice }] || []}
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
-        />  
+        />
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -616,10 +613,21 @@ export default function HomeScreen() {
           data={[]} //{data.totalSessionsBySource || []}
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
-          showTotal={true}c
-        /> 
+          showTotal={true} 
+        />
 
-        <View style={styles.sessionCard}>
+        <Card
+          dateRange={dateRange}
+          storeConfig={data.storeConfig}
+          title="Online store conversion rate"
+          chart="data"
+          data={data.conversionRates || []}
+          isCurrency={false}
+          selectedDatelabel={selectedDatelabel}
+          showTotal={true}
+        />
+
+        {/* <View style={styles.sessionCard}>
           <View style={styles.sassionCardHeader}><Text style={styles.salesCradTitle}>Online store conversion rate</Text>
             <Material name="text-box-search-outline" style={styles.salesIcon} color="gray" size={20} /></View>
           <View style={{ flexDirection: "row" }}><Text style={styles.sessionHeadText}>0% <View><Text style={{ color: "gray" }} >—</Text></View> </Text></View>
@@ -667,7 +675,7 @@ export default function HomeScreen() {
             </View>
           </View>
 
-        </View>
+        </View> */}
 
 
         <View style={styles.footer}>

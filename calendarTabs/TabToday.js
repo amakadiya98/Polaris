@@ -5,31 +5,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 
-export default function TabToday({ onChange, value, ranges, setSelectedDateLabel, setDateRange, dateRange,setShowTab, selectedValueLeft, setSelectedValueLeft}) {
+export default function TabToday({ onChange, value, ranges, setSelectedDateLabel, setDateRange, dateRange,setShowTab, selectedValueLeft, setSelectedValueLeft, setSelectedFromLeftCalender}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [optionModalVisible, setOptionModalVisible]= useState(false)
-    // const [selectedValueLeft, setSelectedValueLeft] = useState(null);
     const [selectedStartDate, setSelectedStartDate] = useState(null);
     const [selectedEndDate, setSelectedEndDate] = useState(null);
     const [startDateText, setStartDateText] = useState("");
     const [endDateText, setEndDateText] = useState("");
     const [selectedLanguage, setSelectedLanguage] = useState();
 
-    useEffect(() => {
-        setStartDateText(formatDate(selectedStartDate));
-        setEndDateText(formatDate(selectedEndDate));
-        console.log(selectedStartDate, '<---selectedStartDate')
-        console.log(selectedEndDate, '<---selectedEndDate')
-        // Update date range whenever selectedStartDate or selectedEndDate changes
-        if (selectedStartDate || selectedEndDate) {
-            const range = {
-                start: formatDate(selectedStartDate),
-                end: formatDate(selectedEndDate)
-            };
-            setDateRange(range);
-            console.log(dateRange, '<-----date range')
-        }
-    }, [selectedStartDate, selectedEndDate]);
+    // useEffect(() => {
+    //     setStartDateText(formatDate(selectedStartDate));
+    //     setEndDateText(formatDate(selectedEndDate));
+    //     console.log(selectedStartDate, '<---selectedStartDate')
+    //     console.log(selectedEndDate, '<---selectedEndDate')
+    //     // Update date range whenever selectedStartDate or selectedEndDate changes
+    //     if (selectedStartDate || selectedEndDate) {
+    //         const range = {
+    //             start: formatDate(selectedStartDate),
+    //             end: formatDate(selectedEndDate)
+    //         };
+    //         setDateRange(range);
+    //         console.log(dateRange, '<-----date range')
+    //     }
+    // }, [selectedStartDate, selectedEndDate]);
 
     const renderItem = ({ item }) => {
         return(
@@ -50,6 +49,8 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
             setDateRange(range);
             setShowTab(false);
             setOptionModalVisible(false);
+            console.log(selectedStartDate, '<---selectedStartDate')
+            console.log(selectedEndDate, '<---selectedEndDate')
         }
     };
 
@@ -107,7 +108,7 @@ export default function TabToday({ onChange, value, ranges, setSelectedDateLabel
             setStartDateText(date ? formatDate(date) : "");
 
         }
-
+        setSelectedFromLeftCalender(true)
     };
 
 
