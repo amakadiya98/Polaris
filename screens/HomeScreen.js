@@ -573,6 +573,7 @@ export default function HomeScreen() {
           selectedDatelabel={selectedDatelabel}
           showTotal={true}
         />
+
         <Card
           dateRange={dateRange}
           storeConfig={data.storeConfig}
@@ -610,7 +611,7 @@ export default function HomeScreen() {
           storeConfig={data.storeConfig}
           title="Retail Sales by POS location"
           chart="bar"
-          data={[]} //{data.totalSessionsBySource || []}
+          data={data.totalSessionsBySource || []}
           isCurrency={false}
           selectedDatelabel={selectedDatelabel}
           showTotal={true} 

@@ -1,5 +1,5 @@
 import react from "react";
-import { View, Dimensions ,Text, StyleSheet} from "react-native";
+import { View, Dimensions, Text, StyleSheet } from "react-native";
 import { LineChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import { formatCurrency, formatNumbers } from '../utils/currency';
@@ -196,9 +196,9 @@ const LineChartComponent = (
     }
 
     // changing name format to fr
-    // console.log(data,'data in card')
-    // data = data.data
+
     data = data?.map(item => item.from && item.to ? { ...item, name: selectedDatelabel } : item) // formatDateRange(item.from, item.to)
+    console.log(JSON.stringify(data), "<==data new")
     // summing up same key data for better calculations
     data = data?.map(item => {
         let tempDataPoints = {}
@@ -230,24 +230,65 @@ const LineChartComponent = (
         }
     })
 
-    console.log(granularity, '<----- granularity')
+    console.log(JSON.stringify(data), 'formatted data')
 
-    // const filterLabels = (labels, interval) => {
-    //     return labels.filter((label, index) => index % interval === 0);
+    // // Assuming `data` is passed as a prop to this component
+    // const formattedData = data[0].data; // Extract the data array
+
+    // // Separate non-zero and zero values
+    // const nonZeroData = formattedData.filter(item => item.value !== 0);
+    // const zeroData = formattedData.filter(item => item.value === 0);
+
+    // // Ensure we get exactly 5 data points
+    // let selectedData = [];
+    // if (nonZeroData.length >= 5) {
+    //     // If there are at least 5 non-zero values, pick the first 5
+    //     selectedData = nonZeroData.slice(0, 5);
+    // } else {
+    //     // If there are fewer than 5 non-zero values, include them all
+    //     selectedData = nonZeroData;
+
+    //     // Fill the remaining slots with zero values
+    //     const remainingSlots = 5 - nonZeroData.length;
+    //     const additionalZeroData = zeroData.slice(0, remainingSlots);
+    //     selectedData = [...selectedData, ...additionalZeroData];
     // }
 
-    // const filteredLabels = filterLabels(data[0]?.data.map(item => item.key), 4).slice(0,4);
+    // // Ensure we have exactly 5 data points
+    // selectedData = selectedData.slice(0, 5);
 
-    const chartData = {
-        labels: data?.[0]?.data?.slice(0, 5).map(item => item.key) ,
-        datasets: [
-            {
-                data: data?.[0]?.data?.slice(0, 5).map(item => item.value),
-            }
-        ]
-    };
+    // const labels = selectedData.map(item => item.key);
+    // const values = selectedData.map(item => item.value);
 
-    console.log(chartData, 'chartdata')  
+    const formattedData = data[0].data;
+    const nonZeroData = formattedData.filter(item => item.value !== 0);
+    const zeroData = formattedData.filter(item => item.value === 0);
+
+    let selectedData = [];
+    if (nonZeroData.length < 5) {
+        const totalZeros = 5 - nonZeroData.length;
+        const zerosBefore = Math.floor(totalZeros / 2);
+        const zerosAfter = Math.ceil(totalZeros / 2);
+
+        // Add zero data before non-zero data
+        selectedData = [...zeroData.slice(0, zerosBefore)];
+
+        // Add non-zero data
+        selectedData = [...selectedData, ...nonZeroData];
+
+        // Add zero data after non-zero data
+        selectedData = [...selectedData, ...zeroData.slice(0, zerosAfter)];
+    } else {
+        selectedData = nonZeroData.slice(0, 5);
+    }
+
+    // Ensure exactly 5 data points
+    selectedData = selectedData.slice(0, 5);
+
+    const labels = selectedData.map(item => item.key);
+    const values = selectedData.map(item => item.value);
+
+    console.log(granularity, '<----- granularity')
 
 
     let sum
@@ -267,14 +308,6 @@ const LineChartComponent = (
         singleData = data?.[0]?.data?.[0]
     }
 
-    const yValues = chartData.datasets[0].data;
-    const maxYValue = Math.max(...yValues);
-    const minYValue = Math.min(...yValues);
-    const interval = (maxYValue - minYValue) / 4;
-
-    console.log(interval, "interval")
-    console.log(chartData.datasets, 'chartData datasets');
-
     return (
         <View>
             <Text style={styles.chartHeadText}>{isCurrency && (storeConfig?.currency_alignment === 'left') ? storeConfig.currency_symbol : ''}{formatNumbers((total ? total[0] : sum) || 0).replace('.00', '')} {isCurrency && (!storeConfig?.currency_alignment || storeConfig?.currency_alignment === 'right') ? storeConfig?.currency_symbol : ''}</Text>
@@ -284,15 +317,21 @@ const LineChartComponent = (
                 //   labels: [],
                 //   datasets: []
                 // }}
-                data={chartData}
-                width={Dimensions.get('window').width + 50}
+                // data={chartData}
+                data={{
+                    labels: labels,
+                    datasets: [
+                        {
+                            data: values,
+                        },
+                    ],
+                }}
+                width={Dimensions.get('window').width + 30}
                 height={220}
                 chartConfig={chartConfig}
                 withVerticalLines={false}
                 withDots={false}
                 bezier
-                style={{ paddingRight: 50 }}
-                yAxisInterval={interval}
                 formatYLabel={(yValue) => `${isCurrency && storeConfig?.currency_alignment === 'left' ? storeConfig.currency_symbol : ''}${isCurrency ? formatCurrency(yValue) : yValue}${isCurrency && (!storeConfig?.currency_alignment || storeConfig?.currency_alignment === 'right') ? storeConfig?.currency_symbol : ''}`}
             />
         </View>
@@ -304,21 +343,21 @@ const chartConfig = {
     backgroundGradientToOpacity: 0,
     color: (opacity = 1) => '#53B7D5',
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
+    // style: {
+    //     borderRadius: 16,
+    // },
     propsForBackgroundLines: {
-      strokeDasharray: '',
-      stroke: 'rgba(0, 0, 0, 0.1)',
+        strokeDasharray: '',
+        stroke: 'rgba(0, 0, 0, 0.1)',
     },
     strokeWidth: 2,
     fillShadowGradientFromOpacity: 0.1,
     fillShadowGradientToOpacity: 0,
     yAxisSuffix: '',
     yAxisInterval: 1,
-  };
+};
 
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     chartHeadText: {
         marginTop: 5,
         marginBottom: 20,
@@ -326,7 +365,7 @@ const chartConfig = {
         fontWeight: "700",
         color: "black",
         fontFamily: "Roboto-Regular"
-      },
-  })
+    },
+})
 
-  export default LineChartComponent;
+export default LineChartComponent;
